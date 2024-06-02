@@ -11,7 +11,12 @@ Route::post("register", [ApiController::class, "register"]);
 //Login
 Route::post("login", [ApiController::class, "login"]);
 
-Route::group([], function(){
+Route::group([
+    "middleware" => ["auth:sanctum"]
+], function(){
     //Profile
-    Route::post("profile",[ApiController::class,"profile"]);
+    Route::get("profile",[ApiController::class,"profile"]);
+
+    //Logout
+    Route::get("logout",[ApiController::class,"logout"]);
 });
