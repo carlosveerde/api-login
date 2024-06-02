@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 
 class ApiController extends Controller
 {
-    //
+    public function register(Request $request)
+    {
+        echo "Register Api";
+    }
 }
 
 //Registro, Login, Perfil e Logout
