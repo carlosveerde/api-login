@@ -8,6 +8,10 @@ use App\Http\Controllers\Api\ApiController;
 
 Route::post("register", [ApiController::class, "register"]);
 
-/*Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');*/
+//Login
+Route::post("login", [ApiController::class, "login"]);
+
+Route::group([], function(){
+    //Profile
+    Route::post("profile",[ApiController::class,"profile"]);
+});

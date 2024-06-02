@@ -13,7 +13,8 @@ class ApiController extends Controller
 {
     public function register(Request $request)
     {   
-        try {
+        try 
+        {
         $validateUser = Validator::make($request->all(),
         [
             'name' => 'required',
@@ -40,13 +41,54 @@ class ApiController extends Controller
             'message' => 'User created succesfully',
             'token' => $user->createToken("API TOKEN")->plainTextToken
         ], 200);
-    }   catch(\Throwable $th){
+        } catch (\Throwable $th){
         return response()->json([
             'status' => false,
             'message' => $th->getMessage(),
         ],500);
     }
+    }
 
+    public function login(Request $request)
+    {
+        try 
+        {
+            $validateUser = Validator::make($request->all(),
+        [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if($validateUser->fails()){
+            return response()->json([
+                'status' => false,
+                'message' => 'validation error',
+                'errors' => $validateUser->errors()
+            ], 422);
+        }
+
+        if(!Auth::attempt($request->only(['email', 'password']))){
+            return response()->json([
+                'status' => false,
+                'message' => 'Email and/or password incorrect',
+            ], 401);
+        }
+
+        $user = User::where('email',$request->email)->first();
+        return response()->json([
+            'status' => true,
+            'message' => 'User logged in succesfully',
+            'token' => $user->createToken("API TOKEN")->plainTextToken
+        ], 200);
+
+        } 
+        catch (\Throwable $th)
+        {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage(),
+            ],500);
+        }
     }
 }
 
