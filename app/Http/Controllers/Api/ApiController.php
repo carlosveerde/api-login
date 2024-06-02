@@ -12,7 +12,8 @@ use App\Models\User;
 class ApiController extends Controller
 {
     public function register(Request $request)
-    {
+    {   
+        try {
         $validateUser = Validator::make($request->all(),
         [
             'name' => 'required',
@@ -39,6 +40,12 @@ class ApiController extends Controller
             'message' => 'User created succesfully',
             'token' => $user->createToken("API TOKEN")->plainTextToken
         ], 200);
+    }   catch(\Throwable $th){
+        return response()->json([
+            'status' => false,
+            'message' => $th->getMessage(),
+        ],500);
+    }
 
     }
 }
