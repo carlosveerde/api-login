@@ -107,7 +107,7 @@ class ApiController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'User logged out',
-            'data' => [],
+            'data' => [],''
         ],200);
     }
 }
