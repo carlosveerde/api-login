@@ -1,66 +1,103 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <h1 align="center">API - Login Toolzz - Laravel</h1>
 </p>
 
-## About Laravel
+# Sobre o projeto
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+API RESTful desenvolvida com Laravel 11 e MySQL, para autenticação de usuários. Serve como um exemplo prático de um app Laravel, abordando desde a criação até o login de usuários e testes de integração.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Pré-requisitos 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Para utilizar, é necessário:
 
-## Learning Laravel
+- Composer
+- Docker & Docker Compose
+- git
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Nota
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Verifique a disponibilidade da porta 3306 (padrão para MySQL no Laravel Sail) ou ajuste conforme necessário.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Como Clonar o Projeto
 
-## Laravel Sponsors
+Para clonar o projeto, abra um terminal e execute o comando a seguir e navegue até o diretório do projeto:
+```bash
+git clone https://github.com/carlosveerde/api-login.git
+cd api-login
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Instalação e Configuração do Projeto usando Laravel Sail
 
-### Premium Partners
+Faça uma cópia do arquivo `.env.example` e renomeie-o para `.env` para configurar o ambiente:
+```bash
+cp .env.example .env
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Instale as dependências do projeto executando o comando de instalação:
+```bash
+composer install --ignore-platform-reqs
+```
 
-## Contributing
+Inicie os contêineres Docker utilizando Laravel Sail:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+./vendor/bin/sail up --build
+```
 
-## Code of Conduct
+Gere a chave da aplicação Laravel :
+```bash
+./vendor/bin/sail artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Prepare as tabelas do banco de dados com o migrate:
+```bash
+./vendor/bin/sail artisan migrate
+```
 
-## Security Vulnerabilities
+Caso queira popular o banco de dados com dados de teste, execute o seguinte comando:
+```bash
+./vendor/bin/sail artisan db:seed
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Como Rodar os Testes
 
-## License
+Gere a chave da aplicação Laravel para o ambiente de teste executando o seguinte comando:
+```bash
+./vendor/bin/sail artisan key:generate --env=testing
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Execute os testes de integração utilizando o seguinte comando:
+```bash
+./vendor/bin/sail artisan test 
+```
+
+## Gerando Documentação da API
+
+Para gerar a documentação, utilize o seguinte comando:
+```bash
+./vendor/bin/sail artisan l5-swagger:generate
+```
+
+## Acessando a API
+
+A API estará acessível através do `http://localhost:80`. 
+
+A documentação da API estará disponível em `http://localhost:80/api/documentation`.
+
+## Desligando o Laravel Sail
+
+Para desligar o Laravel Sail, execute o seguinte comando:
+```bash
+./vendor/bin/sail down
+```
+
+## Possíveis Erros e Soluções
+
+- **Erro**: Porta `3306` já está em uso.
+    - **Solução**: Verifique se nenhum outro serviço está usando a porta `3306`. Se necessário, ajuste a porta no seu arquivo `.env` e `docker-compose.yml`.
+
+- **Erro**: Permissões ao executar o Sail.
+    - **Solução**: Execute os comandos do Sail com `sudo` ou adicione seu usuário ao grupo Docker.
+      
+- **Erro**: Problemas ao utilizar o composer.
+    - **Solução**: Tente utilizar o PHP 8.2 com a extenção ZIP instalada antes de executar o `composer install`.
