@@ -7,6 +7,12 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Services\AuthServiceInterface;
 
+/**
+ * @OA\Info(
+ *     title="API Documentation",
+ *     version="1.0.0"
+ * )
+ */
 class ApiController extends Controller
 {
     protected $authService;
@@ -16,6 +22,27 @@ class ApiController extends Controller
         $this->authService = $authService;
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/RegisterRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+    
     public function register(RegisterRequest $request)
     {
         try {
@@ -33,6 +60,27 @@ class ApiController extends Controller
         }
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/LoginRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User logged in successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
     public function login(LoginRequest $request)
     {
         try {
@@ -50,6 +98,21 @@ class ApiController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/profile",
+     *     summary="Get user profile",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Profile Information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function profile()
     {
         return response()->json([
@@ -59,6 +122,20 @@ class ApiController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Logout user",
+     *     @OA\Response(
+     *         response=200,
+     *         description="User logged out",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean"),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
     public function logout()
     {
         $this->authService->logout();
