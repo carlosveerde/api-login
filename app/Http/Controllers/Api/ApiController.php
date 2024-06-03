@@ -5,27 +5,25 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use App\Models\User;
+use App\Services\AuthServiceInterface;
 
 class ApiController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthServiceInterface $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function register(RegisterRequest $request)
     {
         try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => $request->password,
-            ]);
-
+            $result = $this->authService->register($request->all());
             return response()->json([
                 'status' => true,
-                'message' => 'User created succesfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'message' => 'User created successfully',
+                'token' => $result['token'],
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -38,47 +36,35 @@ class ApiController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            if (!Auth::attempt($request->only(['email', 'password']))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Email and/or password incorrect',
-                ], 401);
-            }
-
-            $user = User::where('email', $request->email)->first();
+            $result = $this->authService->login($request->only(['email', 'password']));
             return response()->json([
                 'status' => true,
-                'message' => 'User logged in succesfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
+                'message' => 'User logged in successfully',
+                'token' => $result['token'],
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage(),
-            ], 500);
+            ], 401);
         }
     }
 
     public function profile()
     {
-        $userData = auth()->user();
         return response()->json([
             'status' => true,
             'message' => 'Profile Information',
-            'data' => $userData,
-            'id' => auth()->user()->id
+            'data' => $this->authService->profile(),
         ], 200);
     }
 
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        $this->authService->logout();
         return response()->json([
             'status' => true,
             'message' => 'User logged out',
-            'data' => [], ''
         ], 200);
     }
 }
-
-//Registro, Login, Perfil e Logout
